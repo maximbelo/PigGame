@@ -17,16 +17,16 @@ const playerTwoCurrentScore = document.querySelector("#currentTwo");
 const playerOneTotalScore = document.querySelector("#scoreOne");
 const playerTwoTotalScore = document.querySelector("#scoreTwo");
 
+// H1 element
+const h1 = document.querySelector("h1");
+
 // Dice display in the middle of the page
 const diceDisplay = document.querySelector(".dice");
+// Initial state to hide dice
+diceDisplay.classList.add("hidden");
 
 // Roll dice button
 const rollDice = document.querySelector(".btnRoll");
-
-// Function to generate random num between 1-6
-const diceRoll = () => {
-  return Math.floor(Math.random() * 6) + 1;
-};
 
 // Button to hold points
 const holdBtn = document.querySelector(".btnHold");
@@ -52,39 +52,32 @@ const playerToggle = (currentPlayer, previousPlayer, resetCurrentScore) => {
 const gameOver = () => {
   holdBtn.disabled = true;
   rollDice.disabled = true;
+  diceDisplay.classList.add("hidden");
 };
 
 // Event listner to check what number is generated and display the equivalent dice img
 rollDice.addEventListener("click", () => {
-  const randomNum = diceRoll();
+  // Random num between 1-6
+  const randomNum = Math.floor(Math.random() * 6) + 1;
+  diceDisplay.classList.remove("hidden");
+  diceDisplay.src = `./assets/dice-${randomNum}.png`;
   // Toggle who's turn it is
   if (randomNum === 1) {
     currentScore = 0;
-    diceDisplay.src = "./assets/dice-1.png";
     playerOneTurn = !playerOneTurn;
     if (!playerOneTurn) {
       playerToggle(playerTwo, playerOne, playerOneCurrentScore);
     } else {
       playerToggle(playerOne, playerTwo, playerTwoCurrentScore);
     }
-  } else if (randomNum === 2) {
-    diceDisplay.src = "./assets/dice-2.png";
-  } else if (randomNum === 3) {
-    diceDisplay.src = "./assets/dice-3.png";
-  } else if (randomNum === 4) {
-    diceDisplay.src = "./assets/dice-4.png";
-  } else if (randomNum === 5) {
-    diceDisplay.src = "./assets/dice-5.png";
-  } else {
-    diceDisplay.src = "./assets/dice-6.png";
   }
 
   // Checks to see which player contains the class of playerActive and if randomNum does not equal to 1, and adds to their current score
   if (playerOne.classList.contains("playerActive") && randomNum !== 1) {
-    currentScore = currentScore + randomNum;
+    currentScore += randomNum;
     playerOneCurrentScore.textContent = currentScore;
   } else if (playerTwo.classList.contains("playerActive") && randomNum !== 1) {
-    currentScore = currentScore + randomNum;
+    currentScore += randomNum;
     playerTwoCurrentScore.textContent = currentScore;
   }
 });
@@ -93,13 +86,13 @@ rollDice.addEventListener("click", () => {
 holdBtn.addEventListener("click", () => {
   if (playerOneTurn) {
     playerOneTurn = false;
-    playerOneTotal = currentScore + playerOneTotal;
+    playerOneTotal += currentScore;
     playerOneTotalScore.textContent = playerOneTotal;
     currentScore = 0;
     playerToggle(playerTwo, playerOne, playerOneCurrentScore);
   } else {
     playerOneTurn = true;
-    playerTwoTotal = currentScore + playerTwoTotal;
+    playerTwoTotal += currentScore;
     playerTwoTotalScore.textContent = playerTwoTotal;
     currentScore = 0;
     playerToggle(playerOne, playerTwo, playerTwoCurrentScore);
@@ -109,22 +102,28 @@ holdBtn.addEventListener("click", () => {
   if (playerOneTotal >= 100) {
     gameOver();
     playerOne.classList.add("playerWinner");
+    h1.style.color = "white";
   } else if (playerTwoTotal >= 100) {
     gameOver();
     playerTwo.classList.add("playerWinner");
+    h1.style.color = "white";
   }
 });
 
 // Reset game to original state on click
 newGame.addEventListener("click", () => {
-  playerOneTotal = 0;
-  playerTwoTotal = 0;
-  holdBtn.disabled = false;
-  rollDice.disabled = false;
   playerOne.classList.remove("playerWinner");
   playerTwo.classList.remove("playerWinner");
-  playerOneTotalScore.textContent = 0;
-  playerTwoTotalScore.textContent = 0;
+
   playerOne.classList.add("playerActive");
   playerTwo.classList.remove("playerActive");
+
+  playerOneTotal = 0;
+  playerTwoTotal = 0;
+
+  holdBtn.disabled = false;
+  rollDice.disabled = false;
+
+  playerOneTotalScore.textContent = 0;
+  playerTwoTotalScore.textContent = 0;
 });
