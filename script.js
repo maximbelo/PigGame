@@ -89,12 +89,14 @@ holdBtn.addEventListener("click", () => {
     playerOneTotal += currentScore;
     playerOneTotalScore.textContent = playerOneTotal;
     currentScore = 0;
+
     playerToggle(playerTwo, playerOne, playerOneCurrentScore);
   } else {
     playerOneTurn = true;
     playerTwoTotal += currentScore;
     playerTwoTotalScore.textContent = playerTwoTotal;
     currentScore = 0;
+
     playerToggle(playerOne, playerTwo, playerTwoCurrentScore);
   }
 
@@ -112,6 +114,10 @@ holdBtn.addEventListener("click", () => {
 
 // Reset game to original state on click
 newGame.addEventListener("click", () => {
+  playerOneTurn = true;
+
+  diceDisplay.classList.add("hidden");
+
   playerOne.classList.remove("playerWinner");
   playerTwo.classList.remove("playerWinner");
 
